@@ -79,6 +79,19 @@ for photos. Swapping in a hosted DB later is a contained change.
    every variable exists in all three blocks, that the two dark blocks agree, and
    that night is never a copy of day. Run it after any palette edit.
 
+8. **A linear gradient's iso-lines are straight, so its last stop is a visible
+   edge.** The glass sheen was `linear-gradient(118deg, …, transparent 52%)`. On
+   the portrait plane window that read as a corner highlight; on the wide bus
+   window the 52% stop became a hard seam straight across the pane. Highlights
+   that must not show an edge are radial.
+9. **The Zen layout is height-constrained, not width-constrained.** The window
+   sits in a `min-h-0 flex-1` row so it takes only the space left after the
+   phase label, timer and controls. Sizing it independently (`74vh`) pushed the
+   controls off the bottom of the page on short or wide viewports.
+10. **Never make the Zen controls `pointer-events-none` when idle.** They fade to
+   `opacity-30` and stay clickable; hiding them completely meant a returning user
+   found dead buttons and had to click once just to reveal them.
+
 Also: percentage width and height are different lengths on a non-square box (this
 stretched the sun into an egg), and `formatClock` floors its input because a
 fractional value printed as `43:5.3521835`.

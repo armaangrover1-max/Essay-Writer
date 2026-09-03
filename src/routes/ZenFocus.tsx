@@ -68,6 +68,16 @@ export default function ZenFocus() {
     return () => window.removeEventListener('keydown', onKey)
   }, [navigate, sessionId])
 
+  // Scrolling and typing are activity as much as moving the mouse is.
+  useEffect(() => {
+    window.addEventListener('scroll', revealChrome, { passive: true })
+    window.addEventListener('keydown', revealChrome)
+    return () => {
+      window.removeEventListener('scroll', revealChrome)
+      window.removeEventListener('keydown', revealChrome)
+    }
+  }, [revealChrome])
+
   if (!session) {
     return (
       <div className="grid min-h-dvh place-items-center p-8">
@@ -98,13 +108,14 @@ export default function ZenFocus() {
         }}
       />
 
-      <div className="relative mx-auto flex min-h-dvh max-w-4xl flex-col items-center justify-center gap-6 px-4 py-6 sm:gap-8">
+      <div className="relative mx-auto flex h-dvh max-w-5xl flex-col items-center justify-center gap-4 px-4 py-4 sm:gap-6">
+        {/* The window takes whatever height is left once the chrome below has
+            had its share, so nothing is ever pushed off the bottom. */}
+        <div className="flex min-h-0 w-full flex-1 items-center justify-center">
         <div
           className={cx(
-            'relative overflow-hidden',
-            isPlane
-              ? 'aspect-[3/4] h-[min(74vh,760px)] max-w-[92vw] rounded-[46%/33%]'
-              : 'aspect-[4/3] w-[min(92vw,880px)] max-h-[74vh] rounded-2xl',
+            'relative h-full w-auto max-w-full overflow-hidden',
+            isPlane ? 'aspect-[3/4] rounded-[46%/33%]' : 'aspect-[4/3] rounded-2xl',
           )}
           style={{
             boxShadow:
@@ -120,8 +131,9 @@ export default function ZenFocus() {
           />
           <CabinInterior vehicle={vehicle} weather={weather} />
         </div>
+        </div>
 
-        <div className="text-center">
+        <div className="shrink-0 text-center">
           <p className="font-display text-lg tracking-wide text-ink">
             {PHASE_LABEL[vehicle][phase]}
             <span className="text-ink-faint">
@@ -161,8 +173,8 @@ export default function ZenFocus() {
 
         <div
           className={cx(
-            'flex flex-wrap justify-center gap-2 transition-opacity duration-500',
-            chromeVisible ? 'opacity-100' : 'pointer-events-none opacity-0',
+            'flex shrink-0 flex-wrap justify-center gap-2 transition-opacity duration-500',
+            chromeVisible ? 'opacity-100' : 'opacity-30',
           )}
         >
           {timer.isRunning ? (

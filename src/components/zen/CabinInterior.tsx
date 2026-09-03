@@ -121,7 +121,8 @@ export function CabinInterior({
         aria-hidden
         style={{
           background:
-            'linear-gradient(118deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.03) 34%, transparent 52%)',
+            'radial-gradient(115% 85% at 14% 6%, rgba(255,255,255,0.10), ' +
+            'rgba(255,255,255,0.035) 30%, transparent 58%)',
         }}
       />
 
