@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-03T05:31:36.275Z",
+  "phase": null,
+  "phase_name": "Essay Trainer — built conversationally, outside GSD phases",
+  "phase_dir": ".planning",
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
+  "context_kind": "default",
+  "completed_tasks": [
+    {"id": 1, "name": "Scaffold Vite + React 19 + TS 6 + Tailwind v4, theming, routing", "status": "done", "commit": "c1032ce"},
+    {"id": 2, "name": "Storage layer: localStorage data + IndexedDB photos + export/import", "status": "done", "commit": "c1032ce"},
+    {"id": 3, "name": "Prompt selection, stats, timer, session actions (all TDD)", "status": "done", "commit": "c1032ce"},
+    {"id": 4, "name": "Seven routes: dashboard, roll, write, zen, review, history, settings", "status": "done", "commit": "c1032ce"},
+    {"id": 5, "name": "Zen focus mode v1 — window seat, journey phases synced to timer", "status": "done", "commit": "c1032ce"},
+    {"id": 6, "name": "PWA manifest, icons, README, git init", "status": "done", "commit": "c1032ce"},
+    {"id": 7, "name": "Zen overhaul — Alto-style palettes, scenery, weather, banking, rAF parallax", "status": "done", "commit": "c1032ce"},
+    {"id": 8, "name": "Prompt bank completed to 60 (20/lane, 6-8-6 across tiers)", "status": "done", "commit": "2ce11d2"},
+    {"id": 9, "name": "CLAUDE.md written; both commits on main; tree clean", "status": "done", "commit": "2ce11d2"}
+  ],
+  "remaining_tasks": [
+    {"id": 10, "name": "Verify Zen animation flows in a real browser window (blocked in this environment)", "status": "not_started"},
+    {"id": 11, "name": "Write real essays against the 60-prompt bank and judge whether the seed/depth format holds", "status": "not_started"},
+    {"id": 12, "name": "Optional: push to a remote for off-machine backup", "status": "not_started"},
+    {"id": 13, "name": "Deferred v2: pre-writing planning pane (thesis + three moves + strongest objection)", "status": "not_started"},
+    {"id": 14, "name": "Deferred v2: one-line retrospective note per session", "status": "not_started"},
+    {"id": 15, "name": "Deferred v2: multi-device sync", "status": "not_started"}
+  ],
+  "blockers": [
+    {
+      "description": "Live animation (rAF and CSS keyframes) could not be observed. The Claude Browser pane is collapsed, so document.hidden is true and requestAnimationFrame delivers 0 frames per second. Measured directly, not assumed.",
+      "type": "external",
+      "workaround": "Wiring was verified indirectly instead: stepParallax is unit-tested; the CSS translate was measured at 0 -> 0px, 0.5 -> -249.75px, 0.999 -> -499px against a 499.5px tile (a seamless wrap); the bank transform matrix was confirmed as exactly rotate(-14deg) x scale(1.4); the snow carrier column measured 666px against a 666px window. A human must open http://localhost:5173 in a normal browser window to confirm motion actually flows."
+    }
+  ],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Open the app in a real browser window and confirm the Zen scene actually animates (parallax drift, snow/rain falling, the bank rolling in and out)", "context": "The only claim in this project made on inference rather than observation. Everything else was verified end to end.", "blocking": false},
+    {"action": "Decide whether to push to a remote (e.g. gh repo create essay-trainer --private --source=. --push)", "context": "The repo is local-only. Two commits exist but there is no off-machine backup.", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "Paper only — no text editor anywhere in the app", "rationale": "Armaan writes essays by hand; the app is a companion around the writing, not a place to do it. This reshapes every other feature.", "phase": null},
+    {"decision": "Hand-authored prompt bank, never AI-generated", "rationale": "Armaan explicitly rejected live generation: wanted 'creative not ai slop' where each prompt teaches something real. 60 excellent prompts beat infinite mediocre ones.", "phase": null},
+    {"decision": "Seed shown up front, depth layer withheld until review", "rationale": "The steelman, reading list and trap would contaminate the writer's own thinking if visible beforehand. Withholding preserves the exercise while still teaching.", "phase": null},
+    {"decision": "Three lanes with separate prompts, guidance and rubrics", "rationale": "A personal statement and a Rawls essay are different crafts; one shared rubric would be wrong half the time.", "phase": null},
+    {"decision": "Only the prompt actually written is consumed", "rationale": "Passed-over prompts return to the pool, so 60 prompts lasts ~5 months at 3/week rather than burning 3 per roll.", "phase": null},
+    {"decision": "Weekly goal chain instead of a daily streak", "rationale": "A daily streak snapping after a strong run is demoralising; a weekly chain rewards consistency without punishing one busy day.", "phase": null},
+    {"decision": "Weather selectable in Settings; scenery left automatic", "rationale": "Armaan chose Settings-controlled weather. Scenery stayed automatic because the surprise of what you are flying over is worth more than the control, and it keeps Settings uncluttered.", "phase": null},
+    {"decision": "Photos stored as {type, bytes: ArrayBuffer}, not as Blobs", "rationale": "Blobs do not survive IndexedDB structured-clone in jsdom, and historically not in Safari. Storing bytes is both testable and safer.", "phase": null},
+    {"decision": "Every non-trivial Zen behaviour lives in a pure, tested module", "rationale": "scenery, weather, banking, parallax, journey and random are pure so correctness never depends on watching the screen — which turned out to matter, since the pane cannot show motion.", "phase": null}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Open http://localhost:5173 in a real browser window, start a session, and enter Zen mode to confirm the animation flows. Then write one essay against a Sharpener prompt and one against a Full essay prompt to judge whether the seed-then-depth format holds at both lengths.",
+  "context_notes": "This project was NOT built through GSD phases — there is no .planning/phases structure, so this handoff uses the workflow's default context. The durable state is CLAUDE.md (architecture, conventions and five hard-won gotchas), README.md (what it is and how to run it), 131 passing tests, and two commits on main. A resuming agent should read CLAUDE.md first; it is more reliable than any summary of this conversation. The work is at a natural stopping point: tree is clean, everything builds, nothing is half-finished."
+}
