@@ -68,6 +68,17 @@ for photos. Swapping in a hosted DB later is a contained change.
 5. **TypeScript runs with `erasableSyntaxOnly`** — constructor parameter properties
    (`constructor(private x: T)`) are a compile error. Assign in the body.
 
+6. **A glow needs one monotonic gradient, not a gradient plus a `box-shadow`.**
+   The sun faded to transparent at 76% of its box while its shadow only began at
+   the box edge, leaving a ring of bare sky between the two. It read as a dirty
+   halo. One radial gradient whose alpha only ever decreases.
+7. **The palette has three blocks per phase** — day, `@media` dark, and explicit
+   `[data-theme="dark"]` — and `.zen[data-phase="X"] { --var` is a *substring* of
+   the explicit-dark selector. A find-and-replace on it silently writes daytime
+   values into the dark block. `styles/zen.css.test.ts` parses the CSS and asserts
+   every variable exists in all three blocks, that the two dark blocks agree, and
+   that night is never a copy of day. Run it after any palette edit.
+
 Also: percentage width and height are different lengths on a non-square box (this
 stretched the sun into an egg), and `formatClock` floors its input because a
 fractional value printed as `43:5.3521835`.

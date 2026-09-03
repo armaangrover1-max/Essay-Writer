@@ -16,6 +16,7 @@
 @property --land-base { syntax: "<color>"; inherits: true; initial-value: #2e3a55; }
 @property --city-light { syntax: "<color>"; inherits: true; initial-value: #ffd9a0; }
 @property --cloud { syntax: "<color>"; inherits: true; initial-value: #f3e6d6; }
+@property --wing { syntax: "<color>"; inherits: true; initial-value: #c3c8d2; }
 @property --star-opacity { syntax: "<number>"; inherits: true; initial-value: 0; }
 @property --sun-y { syntax: "<percentage>"; inherits: true; initial-value: 40%; }
 
@@ -37,6 +38,7 @@
 
 /* ---- palette: the day journey ---- */
 .zen[data-phase="depart"] {
+  --wing: #8f8798;
   --cloud: #e8cdbe;
   --sky-1: #24406e; --sky-2: #5e6e9e; --sky-3: #c98a79; --sky-4: #f0b07a;
   --sun: #ffe0b0; --sun-glow: rgba(255, 214, 160, 0.5);
@@ -44,6 +46,7 @@
   --city-light: #ffd9a0;
 }
 .zen[data-phase="climb"] {
+  --wing: #c9ccd6;
   --cloud: #f2ecdd;
   --sky-1: #2e6fa3; --sky-2: #5e9ec4; --sky-3: #9fc7dc; --sky-4: #e8dcc0;
   --sun: #fff2d0; --sun-glow: rgba(255, 242, 208, 0.42);
@@ -51,6 +54,7 @@
   --city-light: #ffe8bc;
 }
 .zen[data-phase="cruise"] {
+  --wing: #d5d9e2;
   --cloud: #ffffff;
   --sky-1: #0e4f86; --sky-2: #2e7eb4; --sky-3: #74b4d6; --sky-4: #bfddea;
   --sun: #fffbec; --sun-glow: rgba(255, 251, 236, 0.38);
@@ -58,6 +62,7 @@
   --city-light: #fff0cc;
 }
 .zen[data-phase="descend"] {
+  --wing: #b09a9c;
   --cloud: #f7dcbe;
   --sky-1: #1e3e70; --sky-2: #6e5e92; --sky-3: #d08a70; --sky-4: #f5b96e;
   --sun: #ffc178; --sun-glow: rgba(255, 193, 120, 0.5);
@@ -65,6 +70,7 @@
   --city-light: #ffd79a;
 }
 .zen[data-phase="arrive"] {
+  --wing: #9c8592;
   --cloud: #f6cfae;
   --sky-1: #17325c; --sky-2: #6b4a78; --sky-3: #c4655e; --sky-4: #f2924e;
   --sun: #ff9a4e; --sun-glow: rgba(255, 154, 78, 0.55);
@@ -77,6 +83,7 @@
    and the explicit toggle, because a theme choice must beat the system. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .zen[data-phase="depart"] {
+    --wing: #0c0f18;
     --cloud: #3a3550;
     --sky-1: #10173a; --sky-2: #2e1f45; --sky-3: #6b3550; --sky-4: #b85c48;
     --sun: #d97a50; --sun-glow: rgba(217, 122, 80, 0.5);
@@ -84,6 +91,7 @@
     --city-light: #ffcf8a;
   }
   :root:not([data-theme="light"]) .zen[data-phase="climb"] {
+    --wing: #090c14;
     --cloud: #2b2f4e;
     --sky-1: #080d26; --sky-2: #171b3c; --sky-3: #35244a; --sky-4: #5e3550;
     --sun: #a8664c; --sun-glow: rgba(168, 102, 76, 0.4);
@@ -91,6 +99,7 @@
     --city-light: #ffc87e;
   }
   :root:not([data-theme="light"]) .zen[data-phase="cruise"] {
+    --wing: #070a11;
     --cloud: #1a2445;
     --sky-1: #03060f; --sky-2: #080e22; --sky-3: #101a38; --sky-4: #1e2a50;
     --sun: #d6def0; --sun-glow: rgba(214, 222, 240, 0.3);
@@ -98,6 +107,7 @@
     --city-light: #ffd08a;
   }
   :root:not([data-theme="light"]) .zen[data-phase="descend"] {
+    --wing: #090d17;
     --cloud: #33305a;
     --sky-1: #071030; --sky-2: #1b1d45; --sky-3: #45305c; --sky-4: #8a5566;
     --sun: #e0a458; --sun-glow: rgba(224, 164, 88, 0.42);
@@ -105,6 +115,7 @@
     --city-light: #ffce8e;
   }
   :root:not([data-theme="light"]) .zen[data-phase="arrive"] {
+    --wing: #101725;
     --cloud: #3d3358;
     --sky-1: #0e2050; --sky-2: #3a3a70; --sky-3: #8a5a70; --sky-4: #e89a5e;
     --sun: #ffb070; --sun-glow: rgba(255, 176, 112, 0.55);
@@ -114,6 +125,7 @@
 }
 
 :root[data-theme="dark"] .zen[data-phase="depart"] {
+  --wing: #0c0f18;
   --cloud: #3a3550;
   --sky-1: #10173a; --sky-2: #2e1f45; --sky-3: #6b3550; --sky-4: #b85c48;
   --sun: #d97a50; --sun-glow: rgba(217, 122, 80, 0.5);
@@ -121,6 +133,7 @@
   --city-light: #ffcf8a;
 }
 :root[data-theme="dark"] .zen[data-phase="climb"] {
+  --wing: #090c14;
   --cloud: #2b2f4e;
   --sky-1: #080d26; --sky-2: #171b3c; --sky-3: #35244a; --sky-4: #5e3550;
   --sun: #a8664c; --sun-glow: rgba(168, 102, 76, 0.4);
@@ -128,6 +141,7 @@
   --city-light: #ffc87e;
 }
 :root[data-theme="dark"] .zen[data-phase="cruise"] {
+  --wing: #070a11;
   --cloud: #1a2445;
   --sky-1: #03060f; --sky-2: #080e22; --sky-3: #101a38; --sky-4: #1e2a50;
   --sun: #d6def0; --sun-glow: rgba(214, 222, 240, 0.3);
@@ -135,6 +149,7 @@
   --city-light: #ffd08a;
 }
 :root[data-theme="dark"] .zen[data-phase="descend"] {
+  --wing: #090d17;
   --cloud: #33305a;
   --sky-1: #071030; --sky-2: #1b1d45; --sky-3: #45305c; --sky-4: #8a5566;
   --sun: #e0a458; --sun-glow: rgba(224, 164, 88, 0.42);
@@ -142,6 +157,7 @@
   --city-light: #ffce8e;
 }
 :root[data-theme="dark"] .zen[data-phase="arrive"] {
+  --wing: #101725;
   --cloud: #3d3358;
   --sky-1: #0e2050; --sky-2: #3a3a70; --sky-3: #8a5a70; --sky-4: #e89a5e;
   --sun: #ffb070; --sun-glow: rgba(255, 176, 112, 0.55);
@@ -155,7 +171,7 @@
   transition:
     --sky-1 10s linear, --sky-2 10s linear, --sky-3 10s linear, --sky-4 10s linear,
     --sun 10s linear, --sun-glow 10s linear, --land-base 10s linear, --cloud 10s linear,
-    --city-light 10s linear, --star-opacity 10s linear, --sun-y 10s ease-in-out;
+    --city-light 10s linear, --wing 10s linear, --star-opacity 10s linear, --sun-y 10s ease-in-out;
 }
 
 /* ---- atmospheric perspective ----

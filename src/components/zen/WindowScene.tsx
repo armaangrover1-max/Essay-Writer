@@ -96,7 +96,13 @@ function Stars({ visibility }: { visibility: number }) {
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
       aria-hidden
-      style={{ opacity: `calc(var(--star-opacity) * ${visibility})` }}
+      style={{
+        opacity: `calc(var(--star-opacity) * ${visibility})`,
+        // Stars wash out in the light near the horizon long before they fade
+        // overhead, so the field is masked rather than uniformly dimmed.
+        maskImage: 'linear-gradient(to bottom, #000 0%, #000 26%, transparent 68%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 26%, transparent 68%)',
+      }}
     >
       {stars.map((s, i) => (
         <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#fff" opacity={s.o} />
@@ -312,13 +318,19 @@ export function WindowScene({
         <Stars visibility={sky.starVisibility} />
 
         <div
-          className="absolute left-[18%] aspect-square w-[24%] rounded-full"
+          className="absolute left-[12%] aspect-square w-[42%] -translate-y-[28%] rounded-full"
           style={{
             top: 'var(--sun-y)',
+            // One monotonically fading gradient and no box-shadow. The previous
+            // version faded to transparent at 76% while its shadow only began at
+            // the box edge, leaving a ring of bare sky between the two.
             background:
-              'radial-gradient(circle, var(--sun) 0%, var(--sun) 34%, ' +
-              'color-mix(in oklab, var(--sun) 45%, transparent) 52%, transparent 76%)',
-            boxShadow: '0 0 90px 34px var(--sun-glow), 0 0 200px 80px var(--sun-glow)',
+              'radial-gradient(circle, ' +
+              'var(--sun) 0%, var(--sun) 26%, ' +
+              'color-mix(in oklab, var(--sun) 46%, transparent) 31%, ' +
+              'color-mix(in oklab, var(--sun) 18%, transparent) 44%, ' +
+              'color-mix(in oklab, var(--sun) 6%, transparent) 62%, ' +
+              'transparent 84%)',
             opacity: 1 - sky.dim * 0.9,
           }}
           aria-hidden

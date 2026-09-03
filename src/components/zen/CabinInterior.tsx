@@ -88,13 +88,13 @@ function Wing() {
       aria-hidden
     >
       {/* Root at the lower left, swept out and back to a tip near the edge. */}
-      <path d="M-6,42 L-6,31 L58,24.5 L86,22.2 L89.5,23.3 L78,25.6 L44,42 Z" fill="#0a0d14" />
-      <path d="M86,22.2 L89.5,23.3 L91,15.8 L87.8,15.2 Z" fill="#0a0d14" />
+      <path d="M-6,42 L-6,31 L58,24.5 L86,22.2 L89.5,23.3 L78,25.6 L44,42 Z" fill="var(--wing)" />
+      <path d="M86,22.2 L89.5,23.3 L91,15.8 L87.8,15.2 Z" fill="var(--wing)" />
       {/* One hairline along the leading edge, so it is not a flat cut-out. */}
       <path
         d="M-6,31 L58,24.5 L86,22.2 L86.1,22.9 L58.1,25.2 L-6,31.7 Z"
-        fill="var(--sun)"
-        opacity="0.13"
+        fill="#ffffff"
+        opacity="0.16"
       />
     </svg>
   )
