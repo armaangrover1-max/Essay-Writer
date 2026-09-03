@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import type { Vehicle } from '../../lib/types'
 import { seededRandom } from './random'
 import { WEATHER, type WeatherId } from './weather'
@@ -100,7 +100,7 @@ function Wing() {
   )
 }
 
-export function CabinInterior({
+function CabinInteriorImpl({
   vehicle,
   weather,
 }: {
@@ -159,3 +159,5 @@ export function CabinInterior({
     </>
   )
 }
+
+export const CabinInterior = memo(CabinInteriorImpl)

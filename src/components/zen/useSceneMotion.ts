@@ -48,9 +48,32 @@ export function useSceneMotion(
     let previous = performance.now()
     let frame = 0
 
+    // Custom properties inherit, so driving the scene through them invalidated
+    // style for every star, cloud and flake in the window — several hundred
+    // elements, sixty times a second. That starved the main thread enough to
+    // stall the clock and leave its digits half-repainted. Only five elements
+    // actually move, so the transforms are written straight to those.
+    let world: HTMLElement | null = null
+    let bands: SVGElement[] = []
+
+    const collect = () => {
+      world = element.querySelector<HTMLElement>('.zen-world')
+      bands = Array.from(element.querySelectorAll<SVGElement>('.zen-band[data-layer]'))
+    }
+    collect()
+
+    const stale = () =>
+      !world ||
+      !world.isConnected ||
+      bands.length === 0 ||
+      !bands[0]!.isConnected
+
     const tick = (now: number) => {
       const dt = (now - previous) / 1000
       previous = now
+
+      // React replaces these on a phase or scenery change.
+      if (stale()) collect()
 
       const { targetSpeed: target, schedule: events, timer: t } = latest.current
       state = stepParallax(state, target, dt)
@@ -60,13 +83,18 @@ export function useSceneMotion(
       const progress = bankProgressAt(events, elapsed)
       const bob = Math.sin(now / 4200) * 0.45 + Math.sin(now / 9700) * 0.3
 
-      element.style.setProperty('--px-far', state.far.toFixed(5))
-      element.style.setProperty('--px-mid', state.mid.toFixed(5))
-      element.style.setProperty('--px-near', state.near.toFixed(5))
-      element.style.setProperty('--px-cloud', state.cloud.toFixed(5))
-      element.style.setProperty('--bank', `${angle.toFixed(3)}deg`)
-      element.style.setProperty('--bank-progress', progress.toFixed(4))
-      element.style.setProperty('--bob', `${bob.toFixed(3)}%`)
+      for (const band of bands) {
+        const layer = band.dataset.layer as 'far' | 'mid' | 'near' | 'cloud' | undefined
+        if (!layer) continue
+        band.style.transform = `translate3d(${(state[layer] * -50).toFixed(3)}%,0,0)`
+      }
+
+      if (world) {
+        world.style.transform =
+          `rotate(${angle.toFixed(2)}deg) ` +
+          `scale(${(1 + progress * 0.4).toFixed(4)}) ` +
+          `translateY(${(progress * -8 + bob).toFixed(3)}%)`
+      }
 
       frame = requestAnimationFrame(tick)
     }

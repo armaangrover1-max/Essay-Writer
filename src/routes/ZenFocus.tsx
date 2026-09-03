@@ -37,8 +37,12 @@ export default function ZenFocus() {
     [sessionId, session?.plannedMinutes],
   )
 
-  const sceneRef = useRef<HTMLDivElement>(null)
-  useSceneMotion(sceneRef, {
+  // Motion variables are written to the window, not to the .zen root. They are
+  // inherited custom properties: writing them on the root invalidated style for
+  // every descendant each frame, including the clock, which made the clock
+  // stutter and its digits repaint on top of one another.
+  const windowRef = useRef<HTMLDivElement>(null)
+  useSceneMotion(windowRef, {
     targetSpeed: phaseSpeed(phase, vehicle),
     schedule,
     timer: timer.state,
@@ -91,7 +95,6 @@ export default function ZenFocus() {
 
   return (
     <div
-      ref={sceneRef}
       className="zen relative min-h-dvh overflow-hidden bg-canvas"
       data-phase={phase}
       onMouseMove={revealChrome}
@@ -113,6 +116,7 @@ export default function ZenFocus() {
             had its share, so nothing is ever pushed off the bottom. */}
         <div className="flex min-h-0 w-full flex-1 items-center justify-center">
         <div
+          ref={windowRef}
           className={cx(
             'relative h-full w-auto max-w-full overflow-hidden',
             isPlane ? 'aspect-[3/4] rounded-[46%/33%]' : 'aspect-[4/3] rounded-2xl',
@@ -120,6 +124,9 @@ export default function ZenFocus() {
           style={{
             boxShadow:
               '0 40px 90px -28px rgba(0,0,0,0.6), 0 0 0 10px color-mix(in oklab, var(--c-sunk) 88%, #000), 0 0 0 12px color-mix(in oklab, var(--c-surface) 60%, transparent)',
+            // Keeps the scene's per-frame repaints inside the window, so they
+            // cannot smear the clock drawn beneath it.
+            contain: 'paint',
           }}
         >
           <WindowScene

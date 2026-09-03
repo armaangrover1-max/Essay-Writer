@@ -43,8 +43,16 @@ export function useTimer(sessionId: string, plannedMinutes: number) {
 
   useEffect(() => {
     if (state.runningSince === null) return
-    const id = window.setInterval(() => setNow(Date.now()), 250)
-    return () => window.clearInterval(id)
+    // Aligned to the wall second: the display only shows whole seconds, so a
+    // faster interval re-rendered the tree for nothing, and an unaligned one
+    // made the digits change at an arbitrary moment within each second.
+    let id = 0
+    const tick = () => {
+      setNow(Date.now())
+      id = window.setTimeout(tick, 1000 - (Date.now() % 1000))
+    }
+    id = window.setTimeout(tick, 1000 - (Date.now() % 1000))
+    return () => window.clearTimeout(id)
   }, [state.runningSince])
 
   // A tab returning to the foreground should show the truth immediately.

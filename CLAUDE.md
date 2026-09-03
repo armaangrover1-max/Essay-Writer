@@ -92,6 +92,19 @@ for photos. Swapping in a hosted DB later is a contained change.
    `opacity-30` and stay clickable; hiding them completely meant a returning user
    found dead buttons and had to click once just to reveal them.
 
+11. **Never drive animation through inherited custom properties on a big
+   subtree.** `--px-*`, `--bank` and `--bob` were written to the `.zen` root
+   each frame. Custom properties inherit, so all ~528 elements in the scene had
+   their style invalidated sixty times a second, starving the main thread: the
+   clock stalled and its digits repainted over one another. Only five elements
+   actually move, so `useSceneMotion` writes `transform` straight to those.
+12. **`WindowScene` and `CabinInterior` are memoised, and must stay that way.**
+   Their props are all primitives. Without `memo`, every clock tick reconciled
+   the whole scene tree — several hundred SVG nodes, four times a second.
+13. **The clock ticks once per wall second, not on a 250ms interval.** It only
+   displays whole seconds; the aligned self-correcting `setTimeout` re-renders
+   the tree a quarter as often and changes the digits when they visibly should.
+
 Also: percentage width and height are different lengths on a non-square box (this
 stretched the sun into an egg), and `formatClock` floors its input because a
 fractional value printed as `43:5.3521835`.

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import type { Vehicle } from '../../lib/types'
 import type { PhaseId } from './journey'
 import { buildLandform } from './landforms'
@@ -279,7 +279,7 @@ function Lightning() {
   )
 }
 
-export function WindowScene({
+function WindowSceneImpl({
   phase,
   vehicle,
   scenery,
@@ -373,3 +373,10 @@ export function WindowScene({
     </div>
   )
 }
+
+/**
+ * Every prop is a primitive, so this only re-renders when the scene genuinely
+ * changes. Without it a clock tick reconciled several hundred SVG nodes four
+ * times a second, which is what made the clock itself stutter.
+ */
+export const WindowScene = memo(WindowSceneImpl)
