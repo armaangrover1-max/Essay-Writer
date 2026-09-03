@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c2a48"/>
+      <stop offset="0.6" stop-color="#8d6a6a"/>
+      <stop offset="1" stop-color="#dd9b62"/>
+    </linearGradient>
+    <clipPath id="pane">
+      <rect x="116" y="76" width="280" height="360" rx="132" ry="132"/>
+    </clipPath>
+  </defs>
+
+  <rect width="512" height="512" fill="#14171f"/>
+
+  <g clip-path="url(#pane)">
+    <rect x="116" y="76" width="280" height="360" fill="url(#dusk)"/>
+    <circle cx="234" cy="274" r="44" fill="#f0b070"/>
+    <path d="M116 436 L116 378 L178 352 L234 386 L301 328 L396 371 L396 436 Z" fill="#2e4450"/>
+  </g>
+
+  <rect x="116" y="76" width="280" height="360" rx="132" ry="132"
+        fill="none" stroke="#e8e3d9" stroke-width="14"/>
+</svg>

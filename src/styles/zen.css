@@ -1,0 +1,245 @@
+/* ===============================================================
+   Zen focus mode — the window seat.
+
+   Colour is the whole point here, so every palette variable is
+   registered with @property. Unregistered custom properties cannot be
+   transitioned at all: without these declarations a phase change is a
+   hard cut rather than the light slowly turning over.
+   =============================================================== */
+
+@property --sky-1 { syntax: "<color>"; inherits: true; initial-value: #24406e; }
+@property --sky-2 { syntax: "<color>"; inherits: true; initial-value: #5e6e9e; }
+@property --sky-3 { syntax: "<color>"; inherits: true; initial-value: #c98a79; }
+@property --sky-4 { syntax: "<color>"; inherits: true; initial-value: #f0b07a; }
+@property --sun   { syntax: "<color>"; inherits: true; initial-value: #ffe0b0; }
+@property --sun-glow { syntax: "<color>"; inherits: true; initial-value: rgba(255, 224, 176, 0.45); }
+@property --land-base { syntax: "<color>"; inherits: true; initial-value: #2e3a55; }
+@property --city-light { syntax: "<color>"; inherits: true; initial-value: #ffd9a0; }
+@property --cloud { syntax: "<color>"; inherits: true; initial-value: #f3e6d6; }
+@property --star-opacity { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --sun-y { syntax: "<percentage>"; inherits: true; initial-value: 40%; }
+
+.zen {
+  --weather-dim: 0;
+  --weather-haze: 0;
+  --cloud-boost: 0;
+  --star-weather: 1;
+
+  /* Driven each frame by the motion loop. */
+  --px-far: 0;
+  --px-mid: 0;
+  --px-near: 0;
+  --px-cloud: 0;
+  --bank: 0deg;
+  --bank-progress: 0;
+  --bob: 0px;
+}
+
+/* ---- palette: the day journey ---- */
+.zen[data-phase="depart"] {
+  --cloud: #e8cdbe;
+  --sky-1: #24406e; --sky-2: #5e6e9e; --sky-3: #c98a79; --sky-4: #f0b07a;
+  --sun: #ffe0b0; --sun-glow: rgba(255, 214, 160, 0.5);
+  --land-base: #2e3a55; --star-opacity: 0.2; --sun-y: 58%;
+  --city-light: #ffd9a0;
+}
+.zen[data-phase="climb"] {
+  --cloud: #f2ecdd;
+  --sky-1: #2e6fa3; --sky-2: #5e9ec4; --sky-3: #9fc7dc; --sky-4: #e8dcc0;
+  --sun: #fff2d0; --sun-glow: rgba(255, 242, 208, 0.42);
+  --land-base: #3b5266; --star-opacity: 0; --sun-y: 34%;
+  --city-light: #ffe8bc;
+}
+.zen[data-phase="cruise"] {
+  --cloud: #ffffff;
+  --sky-1: #0e4f86; --sky-2: #2e7eb4; --sky-3: #74b4d6; --sky-4: #bfddea;
+  --sun: #fffbec; --sun-glow: rgba(255, 251, 236, 0.38);
+  --land-base: #40607a; --star-opacity: 0; --sun-y: 22%;
+  --city-light: #fff0cc;
+}
+.zen[data-phase="descend"] {
+  --cloud: #f7dcbe;
+  --sky-1: #1e3e70; --sky-2: #6e5e92; --sky-3: #d08a70; --sky-4: #f5b96e;
+  --sun: #ffc178; --sun-glow: rgba(255, 193, 120, 0.5);
+  --land-base: #2c3e58; --star-opacity: 0.08; --sun-y: 46%;
+  --city-light: #ffd79a;
+}
+.zen[data-phase="arrive"] {
+  --cloud: #f6cfae;
+  --sky-1: #17325c; --sky-2: #6b4a78; --sky-3: #c4655e; --sky-4: #f2924e;
+  --sun: #ff9a4e; --sun-glow: rgba(255, 154, 78, 0.55);
+  --land-base: #22304a; --star-opacity: 0.18; --sun-y: 62%;
+  --city-light: #ffc98a;
+}
+
+/* ---- palette: the night flight ----
+   Written once as a mixin-ish block and applied under both the media query
+   and the explicit toggle, because a theme choice must beat the system. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .zen[data-phase="depart"] {
+    --cloud: #3a3550;
+    --sky-1: #10173a; --sky-2: #2e1f45; --sky-3: #6b3550; --sky-4: #b85c48;
+    --sun: #d97a50; --sun-glow: rgba(217, 122, 80, 0.5);
+    --land-base: #131a2c; --star-opacity: 0.55; --sun-y: 60%;
+    --city-light: #ffcf8a;
+  }
+  :root:not([data-theme="light"]) .zen[data-phase="climb"] {
+    --cloud: #2b2f4e;
+    --sky-1: #080d26; --sky-2: #171b3c; --sky-3: #35244a; --sky-4: #5e3550;
+    --sun: #a8664c; --sun-glow: rgba(168, 102, 76, 0.4);
+    --land-base: #0e1424; --star-opacity: 0.85; --sun-y: 40%;
+    --city-light: #ffc87e;
+  }
+  :root:not([data-theme="light"]) .zen[data-phase="cruise"] {
+    --cloud: #1a2445;
+    --sky-1: #03060f; --sky-2: #080e22; --sky-3: #101a38; --sky-4: #1e2a50;
+    --sun: #d6def0; --sun-glow: rgba(214, 222, 240, 0.3);
+    --land-base: #080c18; --star-opacity: 1; --sun-y: 20%;
+    --city-light: #ffd08a;
+  }
+  :root:not([data-theme="light"]) .zen[data-phase="descend"] {
+    --cloud: #33305a;
+    --sky-1: #071030; --sky-2: #1b1d45; --sky-3: #45305c; --sky-4: #8a5566;
+    --sun: #e0a458; --sun-glow: rgba(224, 164, 88, 0.42);
+    --land-base: #0c1224; --star-opacity: 0.7; --sun-y: 44%;
+    --city-light: #ffce8e;
+  }
+  :root:not([data-theme="light"]) .zen[data-phase="arrive"] {
+    --cloud: #3d3358;
+    --sky-1: #0e2050; --sky-2: #3a3a70; --sky-3: #8a5a70; --sky-4: #e89a5e;
+    --sun: #ffb070; --sun-glow: rgba(255, 176, 112, 0.55);
+    --land-base: #14203a; --star-opacity: 0.28; --sun-y: 60%;
+    --city-light: #ffd79c;
+  }
+}
+
+:root[data-theme="dark"] .zen[data-phase="depart"] {
+  --cloud: #3a3550;
+  --sky-1: #10173a; --sky-2: #2e1f45; --sky-3: #6b3550; --sky-4: #b85c48;
+  --sun: #d97a50; --sun-glow: rgba(217, 122, 80, 0.5);
+  --land-base: #131a2c; --star-opacity: 0.55; --sun-y: 60%;
+  --city-light: #ffcf8a;
+}
+:root[data-theme="dark"] .zen[data-phase="climb"] {
+  --cloud: #2b2f4e;
+  --sky-1: #080d26; --sky-2: #171b3c; --sky-3: #35244a; --sky-4: #5e3550;
+  --sun: #a8664c; --sun-glow: rgba(168, 102, 76, 0.4);
+  --land-base: #0e1424; --star-opacity: 0.85; --sun-y: 40%;
+  --city-light: #ffc87e;
+}
+:root[data-theme="dark"] .zen[data-phase="cruise"] {
+  --cloud: #1a2445;
+  --sky-1: #03060f; --sky-2: #080e22; --sky-3: #101a38; --sky-4: #1e2a50;
+  --sun: #d6def0; --sun-glow: rgba(214, 222, 240, 0.3);
+  --land-base: #080c18; --star-opacity: 1; --sun-y: 20%;
+  --city-light: #ffd08a;
+}
+:root[data-theme="dark"] .zen[data-phase="descend"] {
+  --cloud: #33305a;
+  --sky-1: #071030; --sky-2: #1b1d45; --sky-3: #45305c; --sky-4: #8a5566;
+  --sun: #e0a458; --sun-glow: rgba(224, 164, 88, 0.42);
+  --land-base: #0c1224; --star-opacity: 0.7; --sun-y: 44%;
+  --city-light: #ffce8e;
+}
+:root[data-theme="dark"] .zen[data-phase="arrive"] {
+  --cloud: #3d3358;
+  --sky-1: #0e2050; --sky-2: #3a3a70; --sky-3: #8a5a70; --sky-4: #e89a5e;
+  --sun: #ffb070; --sun-glow: rgba(255, 176, 112, 0.55);
+  --land-base: #14203a; --star-opacity: 0.28; --sun-y: 60%;
+  --city-light: #ffd79c;
+}
+
+/* Two minutes of easing: a phase change should be a slow turn of the light,
+   not an event you can point at. */
+.zen {
+  transition:
+    --sky-1 10s linear, --sky-2 10s linear, --sky-3 10s linear, --sky-4 10s linear,
+    --sun 10s linear, --sun-glow 10s linear, --land-base 10s linear, --cloud 10s linear,
+    --city-light 10s linear, --star-opacity 10s linear, --sun-y 10s ease-in-out;
+}
+
+/* ---- atmospheric perspective ----
+   Every silhouette is the same base hue, blended toward the horizon by
+   distance. That single rule is what keeps the palette harmonious no
+   matter which phase or weather is on screen. */
+.zen-land-far  { fill: color-mix(in oklab, var(--land-base) 38%, var(--sky-4)); }
+.zen-land-mid  { fill: color-mix(in oklab, var(--land-base) 68%, var(--sky-4)); }
+.zen-land-near { fill: color-mix(in oklab, var(--land-base) 92%, var(--sky-4)); }
+.zen-water     { fill: color-mix(in oklab, var(--sky-3) 62%, var(--sky-4)); }
+
+.zen-sky {
+  background: linear-gradient(
+    to bottom,
+    var(--sky-1) 0%,
+    var(--sky-2) 34%,
+    var(--sky-3) 68%,
+    var(--sky-4) 100%
+  );
+}
+
+/* ---- motion ----
+   Layers are positioned by variables the motion loop writes each frame, so a
+   change of drift speed eases instead of restarting an animation. */
+.zen-band {
+  width: 200%;
+  will-change: transform;
+}
+.zen-band[data-layer="far"]   { transform: translate3d(calc(var(--px-far) * -50%), 0, 0); }
+.zen-band[data-layer="mid"]   { transform: translate3d(calc(var(--px-mid) * -50%), 0, 0); }
+.zen-band[data-layer="near"]  { transform: translate3d(calc(var(--px-near) * -50%), 0, 0); }
+.zen-band[data-layer="cloud"] { transform: translate3d(calc(var(--px-cloud) * -50%), 0, 0); }
+
+/* Rolling into a bank scales the world just enough that no empty corner can
+   swing into view, and lifts the horizon so more ground comes up underneath.
+   At rest the scale is exactly 1, so nothing is cropped while level. */
+.zen-world {
+  position: absolute;
+  inset: 0;
+  transform:
+    rotate(var(--bank))
+    scale(calc(1 + var(--bank-progress) * 0.4))
+    translateY(calc(var(--bank-progress) * -8% + var(--bob)));
+  transform-origin: 50% 55%;
+  will-change: transform;
+}
+
+@keyframes zen-flash {
+  0%, 92%, 100% { opacity: 0; }
+  94% { opacity: 0.5; }
+  95% { opacity: 0.12; }
+  96.5% { opacity: 0.62; }
+  99% { opacity: 0; }
+}
+.zen-lightning { animation: zen-flash 23s ease-out infinite; }
+
+@keyframes zen-fall {
+  from { transform: translate3d(0, -102%, 0); }
+  to   { transform: translate3d(0, 102%, 0); }
+}
+.zen-snow { animation: zen-fall linear infinite; will-change: transform; }
+
+@keyframes zen-run {
+  from { transform: translate3d(0, -104%, 0); opacity: 0; }
+  10%  { opacity: 1; }
+  88%  { opacity: 1; }
+  to   { transform: translate3d(3%, 104%, 0); opacity: 0; }
+}
+.zen-drop { animation: zen-run linear infinite; will-change: transform, opacity; }
+
+@keyframes zen-haze {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+.zen-haze { width: 200%; animation: zen-haze linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .zen-band,
+  .zen-world { transform: none; }
+  .zen-band { width: 100%; }
+  .zen-snow,
+  .zen-drop,
+  .zen-haze,
+  .zen-lightning { animation: none; }
+  .zen-lightning { opacity: 0; }
+  .zen { transition: none; }
+}
