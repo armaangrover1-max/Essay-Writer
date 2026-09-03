@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { PROMPT_BANK, promptById } from './index'
-import { LANES, TIER_MINUTES, type Lane } from '../../lib/types'
+import { LANES, TIERS, TIER_MINUTES, type Lane, type Tier } from '../../lib/types'
 
 describe('prompt bank integrity', () => {
   test('every prompt id is unique', () => {
@@ -39,11 +39,25 @@ describe('prompt bank integrity', () => {
     }
   })
 
-  test('every lane can fill a full roll of three at standard tier', () => {
+  test('carries twenty prompts in every lane', () => {
     for (const lane of LANES as Lane[]) {
-      const standard = PROMPT_BANK.filter((p) => p.lane === lane && p.tier === 'standard')
-      expect(standard.length, `${lane} standard prompts`).toBeGreaterThanOrEqual(3)
+      const inLane = PROMPT_BANK.filter((p) => p.lane === lane)
+      expect(inLane.length, `${lane} prompts`).toBe(20)
     }
+  })
+
+  test('every lane and length can fill a full roll of three', () => {
+    for (const lane of LANES as Lane[]) {
+      for (const tier of TIERS as Tier[]) {
+        const available = PROMPT_BANK.filter((p) => p.lane === lane && p.tier === tier)
+        expect(available.length, `${lane} / ${tier}`).toBeGreaterThanOrEqual(3)
+      }
+    }
+  })
+
+  test('no two prompts share a title', () => {
+    const titles = PROMPT_BANK.map((p) => p.title)
+    expect(new Set(titles).size).toBe(titles.length)
   })
 })
 

@@ -74,9 +74,9 @@ fractional value printed as `43:5.3521835`.
 
 ## State
 
-The prompt bank ships **9 of a planned 60** prompts — 3 per lane, all standard
-tier. This is deliberate: the format is meant to be judged in real use before the
-remaining 51 are authored. Everything else is complete.
+The prompt bank is **complete at 60** — 20 per lane, split 6 sharpener / 8
+standard / 6 full essay, so every lane-and-length combination can fill a roll of
+three. Tests enforce all of that. Everything else is complete too.
 
 Not built, by decision: a pre-writing planning pane, a per-session retrospective
 note, multi-device sync.

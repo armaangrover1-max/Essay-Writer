@@ -77,9 +77,9 @@ included). Export the archive about once a month.
 
 ## Adding prompts
 
-The bank ships with nine prompts — three per lane, all at standard length — as a
-deliberate first batch, so the format can be judged in real use before the rest
-are written.
+The bank holds 60 hand-authored prompts — 20 per lane, split across the three
+session lengths (6 sharpener, 8 standard, 6 full essay), so every lane and length
+can deal a full hand of three.
 
 To add more, append to `src/data/prompts/{application,argument,creative}.ts`. No
 code changes are needed; `index.ts` picks them up. The tests in
