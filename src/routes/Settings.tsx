@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Button, Card, PageTitle, SectionLabel, cx } from '../components/ui'
+import { Button, Card, PageTitle, SectionLabel, Segmented, cx } from '../components/ui'
 import { useAppData } from '../lib/appData'
 import { exportArchive, exportHistory, parseArchive } from '../lib/storage/exportImport'
 import { allPhotos, putPhotoWithId } from '../lib/storage/photos'
@@ -27,36 +27,6 @@ function Row({ label, hint, children }: { label: string; hint?: string; children
         {hint ? <p className="mt-0.5 text-xs text-ink-faint">{hint}</p> : null}
       </div>
       {children}
-    </div>
-  )
-}
-
-function Segmented<T extends string>({
-  options,
-  value,
-  onChange,
-}: {
-  options: { value: T; label: string }[]
-  value: T
-  onChange: (next: T) => void
-}) {
-  return (
-    <div className="flex overflow-hidden rounded-lg border border-line">
-      {options.map((option) => (
-        <button
-          key={option.value}
-          onClick={() => onChange(option.value)}
-          aria-pressed={value === option.value}
-          className={cx(
-            'px-3 py-1.5 text-sm transition',
-            value === option.value
-              ? 'bg-accent text-accent-ink'
-              : 'bg-surface text-ink-soft hover:text-ink',
-          )}
-        >
-          {option.label}
-        </button>
-      ))}
     </div>
   )
 }
@@ -93,6 +63,7 @@ export default function SettingsView() {
       <Card className="mb-8">
         <Row label="Theme" hint="Warm paper by day, night flight after dark.">
           <Segmented<ThemePref>
+            label="Theme"
             value={data.settings.theme}
             onChange={(theme) => updateSettings({ theme })}
             options={[
@@ -104,6 +75,7 @@ export default function SettingsView() {
         </Row>
         <Row label="Zen vehicle" hint="What you are looking out of while you write.">
           <Segmented<Vehicle>
+            label="Zen vehicle"
             value={data.settings.vehicle}
             onChange={(vehicle) => updateSettings({ vehicle })}
             options={[
@@ -135,6 +107,7 @@ export default function SettingsView() {
         </Row>
         <Row label="Ambient hum" hint="Generated cabin noise. Off by default.">
           <Segmented<'on' | 'off'>
+            label="Ambient hum"
             value={data.settings.ambientSound ? 'on' : 'off'}
             onChange={(v) => updateSettings({ ambientSound: v === 'on' })}
             options={[

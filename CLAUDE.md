@@ -105,6 +105,15 @@ for photos. Swapping in a hosted DB later is a contained change.
    displays whole seconds; the aligned self-correcting `setTimeout` re-renders
    the tree a quarter as often and changes the digits when they visibly should.
 
+14. **Tailwind v4 reads `shadow-[var(--x)]` as a shadow *colour*, not a shadow.**
+   Every card silently rendered a fully transparent box-shadow. Elevation is
+   applied through the plain `.e-1` / `.e-2` / `.e-3` / `.e-lift` classes in
+   `index.css` instead. Check a computed `boxShadow` after touching elevation.
+15. **The departure overlay cannot rely on rAF or `setTimeout` to end itself.**
+   A hidden tab delivers no frames *and* throttles timers, so both backstops
+   fail together. It settles on wall-clock time via `visibilitychange`, which
+   is the only thing that keeps running.
+
 Also: percentage width and height are different lengths on a non-square box (this
 stretched the sun into an egg), and `formatClock` floors its input because a
 fractional value printed as `43:5.3521835`.

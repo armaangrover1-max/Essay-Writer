@@ -22,7 +22,7 @@ function Chrome({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative z-10 min-h-dvh">
       <nav className="sticky top-0 z-20 border-b border-line bg-canvas/85 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center gap-1 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-5xl items-center gap-1 px-4 py-3 sm:px-6">
           <span className="mr-auto hidden font-display text-lg tracking-tight sm:block">Essay Trainer</span>
           {NAV.map((item) => (
             <NavLink
@@ -31,8 +31,12 @@ function Chrome({ children }: { children: React.ReactNode }) {
               end={item.end}
               className={({ isActive }) =>
                 cx(
-                  'rounded-lg px-2.5 py-1.5 text-sm transition sm:px-3',
-                  isActive ? 'bg-sunk font-medium text-ink' : 'text-ink-soft hover:text-ink',
+                  'relative rounded-lg px-2.5 py-1.5 text-sm transition-colors sm:px-3',
+                  'after:absolute after:inset-x-2.5 after:-bottom-px after:h-0.5 after:rounded-full',
+                  'after:transition-transform after:duration-300 after:ease-[var(--ease-soft)]',
+                  isActive
+                    ? 'font-medium text-ink after:scale-x-100 after:bg-accent'
+                    : 'text-ink-soft hover:text-ink after:scale-x-0 after:bg-transparent',
                 )
               }
             >
@@ -41,7 +45,7 @@ function Chrome({ children }: { children: React.ReactNode }) {
           ))}
         </div>
       </nav>
-      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">{children}</main>
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12">{children}</main>
     </div>
   )
 }

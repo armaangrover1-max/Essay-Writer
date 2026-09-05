@@ -5,39 +5,7 @@ import { useAppData } from '../lib/appData'
 import { rollPrompts } from '../lib/selection'
 import { LANES, LANE_LABEL, TIERS, TIER_LABEL, TIER_MINUTES, type Lane, type Prompt, type Tier } from '../lib/types'
 import { PromptCard } from '../components/PromptCard'
-import { Button, Card, Empty, PageTitle, SectionLabel, cx } from '../components/ui'
-
-function Choice<T extends string>({
-  options,
-  value,
-  onChange,
-  label,
-}: {
-  options: readonly T[]
-  value: T
-  onChange: (next: T) => void
-  label: (option: T) => string
-}) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((option) => (
-        <button
-          key={option}
-          onClick={() => onChange(option)}
-          aria-pressed={value === option}
-          className={cx(
-            'rounded-lg border px-3.5 py-2 text-sm transition',
-            value === option
-              ? 'border-accent bg-accent text-accent-ink'
-              : 'border-line bg-surface text-ink-soft hover:border-ink-faint hover:text-ink',
-          )}
-        >
-          {label(option)}
-        </button>
-      ))}
-    </div>
-  )
-}
+import { Button, Card, Empty, PageTitle, SectionLabel, Segmented } from '../components/ui'
 
 export default function NewSession() {
   const navigate = useNavigate()
@@ -74,16 +42,29 @@ export default function NewSession() {
       <div className="space-y-6">
         <div>
           <SectionLabel>Lane</SectionLabel>
-          <Choice options={LANES} value={lane} onChange={setLane} label={(l) => LANE_LABEL[l]} />
+          <Segmented
+            label="Lane"
+            options={LANES.map((l) => ({ value: l, label: LANE_LABEL[l] }))}
+            value={lane}
+            onChange={setLane}
+          />
         </div>
 
         <div>
           <SectionLabel>Length</SectionLabel>
-          <Choice
-            options={TIERS}
+          <Segmented
+            label="Length"
+            options={TIERS.map((t) => ({
+              value: t,
+              label: (
+                <span className="whitespace-nowrap">
+                  {TIER_LABEL[t]}
+                  <span className="tnum ml-1.5 text-ink-faint">{TIER_MINUTES[t]}m</span>
+                </span>
+              ),
+            }))}
             value={tier}
             onChange={setTier}
-            label={(t) => `${TIER_LABEL[t]} · ${TIER_MINUTES[t]} min`}
           />
         </div>
 
@@ -125,7 +106,7 @@ export default function NewSession() {
           <SectionLabel>Saved for later</SectionLabel>
           <div className="space-y-2">
             {bookmarks.map((prompt) => (
-              <Card key={prompt.id} className="flex items-center gap-3 px-4 py-3">
+              <Card key={prompt.id} elevation={2} interactive className="flex items-center gap-3 px-4 py-3">
                 <div className="mr-auto min-w-0">
                   <p className="truncate font-display">{prompt.title}</p>
                   <p className="text-xs text-ink-faint">

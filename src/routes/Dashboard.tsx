@@ -2,19 +2,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { promptById } from '../data/prompts'
 import { GoalRing } from '../components/GoalRing'
 import { Heatmap } from '../components/Heatmap'
-import { Button, Card, Empty, PageTitle, Pill, SectionLabel } from '../components/ui'
+import { Button, Card, Empty, PageTitle, Pill, SectionLabel, Stat } from '../components/ui'
 import { useAppData } from '../lib/appData'
 import { computeStats } from '../lib/stats'
 import { LANE_LABEL, LANES } from '../lib/types'
-
-function Stat({ value, label }: { value: number | string; label: string }) {
-  return (
-    <div>
-      <p className="font-mono text-2xl tabular-nums">{value}</p>
-      <p className="mt-0.5 text-xs text-ink-faint">{label}</p>
-    </div>
-  )
-}
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -47,39 +38,52 @@ export default function Dashboard() {
         </Card>
       ) : null}
 
-      <Card className="flex flex-wrap items-center gap-8 p-6">
-        <GoalRing done={stats.thisWeek} goal={data.settings.weeklyGoal} />
-        <div className="grid flex-1 grid-cols-3 gap-6">
-          <Stat value={stats.thisMonth} label="this month" />
-          <Stat value={stats.allTime} label="all time" />
-          <Stat value={stats.weekChain} label={stats.weekChain === 1 ? 'week running' : 'weeks running'} />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start">
+        <div className="rise rise-1">
+          <Card elevation={2} className="flex flex-wrap items-center gap-8 p-6">
+            <GoalRing done={stats.thisWeek} goal={data.settings.weeklyGoal} />
+            <div className="grid flex-1 grid-cols-3 gap-6">
+              <Stat value={stats.thisMonth} label="this month" />
+              <Stat value={stats.allTime} label="all time" />
+              <Stat
+                value={stats.weekChain}
+                label={stats.weekChain === 1 ? 'week running' : 'weeks running'}
+                accent={stats.weekChain > 0}
+              />
+            </div>
+          </Card>
+
+          <p className="mt-3 text-xs text-ink-faint">
+            The chain counts weeks, not days — a busy Tuesday should not cost you a streak.
+          </p>
+
+          <div className="mt-6">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate('/new')}
+              className="w-full sm:w-auto"
+            >
+              Start a new essay
+            </Button>
+          </div>
         </div>
-      </Card>
 
-      <p className="mt-3 text-xs text-ink-faint">
-        The chain counts weeks, not days — a busy Tuesday should not cost you a streak.
-      </p>
-
-      <div className="mt-8">
-        <Button variant="primary" size="lg" onClick={() => navigate('/new')} className="w-full sm:w-auto">
-          Start a new essay
-        </Button>
+        <section className="rise rise-2">
+          <SectionLabel>Consistency</SectionLabel>
+          <Card elevation={2} className="p-5">
+            <Heatmap days={stats.heatmap} />
+          </Card>
+        </section>
       </div>
-
-      <section className="mt-10">
-        <SectionLabel>Consistency</SectionLabel>
-        <Card className="p-5">
-          <Heatmap days={stats.heatmap} />
-        </Card>
-      </section>
 
       <section className="mt-10">
         <SectionLabel>By lane</SectionLabel>
         <div className="grid grid-cols-3 gap-3">
           {LANES.map((lane) => (
             <Card key={lane} className="p-4">
-              <p className="font-mono text-xl tabular-nums">{stats.byLane[lane]}</p>
-              <p className="mt-0.5 text-xs text-ink-faint">{LANE_LABEL[lane]}</p>
+              <p className="tnum font-display text-2xl leading-none">{stats.byLane[lane]}</p>
+              <p className="mt-1.5 text-xs text-ink-faint">{LANE_LABEL[lane]}</p>
             </Card>
           ))}
         </div>

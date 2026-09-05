@@ -3,7 +3,7 @@ import { promptById } from '../data/prompts'
 import { RUBRICS, criteriaIds } from '../data/rubrics'
 import { DepthPanel } from '../components/DepthPanel'
 import { SessionPhoto } from '../components/SessionPhoto'
-import { Card, Empty, PageTitle, Pill, SectionLabel, cx } from '../components/ui'
+import { Card, Empty, PageTitle, Pill, SectionLabel, Segmented, cx } from '../components/ui'
 import { useAppData } from '../lib/appData'
 import { criterionTrends } from '../lib/stats'
 import { formatClock } from '../lib/timer'
@@ -79,22 +79,16 @@ export default function History() {
         History
       </PageTitle>
 
-      <div className="mb-6 flex flex-wrap gap-2">
-        {(['all', ...LANES] as const).map((option) => (
-          <button
-            key={option}
-            onClick={() => setLane(option)}
-            aria-pressed={lane === option}
-            className={cx(
-              'rounded-lg border px-3 py-1.5 text-sm transition',
-              lane === option
-                ? 'border-accent bg-accent text-accent-ink'
-                : 'border-line bg-surface text-ink-soft hover:border-ink-faint hover:text-ink',
-            )}
-          >
-            {option === 'all' ? 'All' : LANE_LABEL[option]}
-          </button>
-        ))}
+      <div className="mb-6">
+        <Segmented
+          label="Filter by lane"
+          value={lane}
+          onChange={setLane}
+          options={(['all', ...LANES] as const).map((option) => ({
+            value: option,
+            label: option === 'all' ? 'All' : LANE_LABEL[option],
+          }))}
+        />
       </div>
 
       {lane !== 'all' ? <Trends lane={lane} sessions={data.sessions} /> : null}

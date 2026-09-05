@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { DepartureTransition } from '../components/zen/DepartureTransition'
 import { promptById } from '../data/prompts'
 import { useAppData } from '../lib/appData'
 import { useTimer } from '../lib/useTimer'
@@ -8,6 +10,7 @@ import { TimerControl } from '../components/TimerControl'
 import { Button, Card, Empty, Pill, SectionLabel } from '../components/ui'
 
 export default function SessionView() {
+  const [departing, setDeparting] = useState(false)
   const { sessionId = '' } = useParams()
   const navigate = useNavigate()
   const { data, abandonSession } = useAppData()
@@ -47,6 +50,13 @@ export default function SessionView() {
         you finish — so they cannot shape what you write.
       </p>
 
+      {departing ? (
+        <DepartureTransition
+          vehicle={session.vehicle}
+          onDone={() => navigate(`/zen/${session.id}`)}
+        />
+      ) : null}
+
       <div className="mt-8">
         <TimerControl
           minutes={timer.state.plannedMinutes}
@@ -58,7 +68,7 @@ export default function SessionView() {
           onPause={timer.pause}
           onEnterZen={() => {
             if (!hasStarted) timer.start()
-            navigate(`/zen/${session.id}`)
+            setDeparting(true)
           }}
           onFinish={() => {
             timer.pause()
